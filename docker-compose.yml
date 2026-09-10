@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  gateway:
+    build: .
+    ports:
+      - "8803:8000"
+    environment:
+      PROVIDER_BASE_URL: ${PROVIDER_BASE_URL:-https://api.openai.com/v1}
+      PROVIDER_API_KEY: ${PROVIDER_API_KEY}
+      PROVIDER_MODEL: ${PROVIDER_MODEL:-gpt-4o}
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: dl_adversarial
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+volumes:
+  postgres_data:
